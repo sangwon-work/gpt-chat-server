@@ -7,14 +7,30 @@ import {
   OnGatewayDisconnect,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
+import { SocketJwtMiddleware } from './middleware/socket-jwt.middleware';
+import { SaveSendMessageFacadeService } from '../chatting/facade/save-send-message-facade.service';
+// eslint-disable-next-line max-len
+import { GetChattingRoomMessageFacadeService } from '../chatting/facade/get-chatting-room-message-facade.service';
 
-@WebSocketGateway({ cors: { origin: '*' } })
-export class WebSocketsGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
-  @WebSocketServer()
+@WebSocketGateway({
+  cors: { origin: '*' },
+  pingInterval: 25000,
+  pingTimeout: 60000,
+}) // 게이트웨이 설정
+export class WebSocketsGateway
+  implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
+{
+  @WebSocketServer() // 웹소켓 인스턴스 생성
   server: Server;
 
+  constructor(
+    private readonly jwtMiddleware: SocketJwtMiddleware,
+    private readonly saveSendMessageFacadeService: SaveSendMessageFacadeService,
+    private readonly getChattingRoomMessageFacadeService: GetChattingRoomMessageFacadeService,
+  ) {}
+
   afterInit(server: Server) {
-    console.log('WebSocket Initialized');
+    server.use(this.jwtMiddleware.handle.bind(this.jwtMiddleware));
   }
 
   async handleConnection(client: Socket) {
@@ -28,22 +44,55 @@ export class WebSocketsGateway implements OnGatewayInit, OnGatewayConnection, On
   }
 
   // 클라이언트가 보낸 메세지 처리
+  // 해당 이벤트 구
   @SubscribeMessage('chat')
-  handleMessage(client: Socket, payload: { roomId: string; message: string }) {
+  async handleMessage(
+    client: Socket,
+    payload: { roomId: string; message: string },
+  ) {
     // 클라이언트로부터 메시지 수신 처리
-    console.log('Received: ', payload);
+
+    const user = client.data.user; // 👈 미들웨어에서 붙인 유저 정보
+
+    try {
+      // 메세지 저장 (Facade 패턴)
+      await this.saveSendMessageFacadeService.saveMessage(
+        user.userpkey,
+        payload.roomId,
+        payload.message,
+      );
+    } catch (err) {
+      console.log(err);
+    }
+
+    console.log('payload : ', payload);
 
     // 특정 채팅방에 메세지 전송
     this.server.to(payload.roomId).emit('message', {
-      sender: client.id,
+      sender: user.nickname,
       message: payload.message,
+      sendat: new Date().toISOString(),
     });
   }
 
   // 채팅방 입장
   @SubscribeMessage('join')
-  handleJoin(client: Socket, roomId: string) {
+  async handleJoin(client: Socket, roomId: string) {
     client.join(roomId);
-    client.emit('joined', roomId);
+    // 채팅 대화 목록 조회
+    const { roomname, messages } =
+      await this.getChattingRoomMessageFacadeService.getMessages(roomId);
+    console.log(roomname);
+    client.emit('joined', {
+      roomId: roomId,
+      roomname: roomname,
+      messagelist: messages,
+    });
+  }
+
+  @SubscribeMessage('pingCheck')
+  handlePingCheck(client: Socket) {
+    console.log(`📡 Ping received from: ${client.id}`);
+    client.emit('pongCheck'); // 응답 원할 경우
   }
 }

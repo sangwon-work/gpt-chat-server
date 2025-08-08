@@ -21,5 +21,10 @@ module.exports = {
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
+    '@typescript-eslint/no-unused-vars': 'off',
+    // 문자열을 항상 single quote로
+    quotes: ['error', 'single', { avoidEscape: true }],
+    // 한 줄 최대 길이 제한 (예: 100자)
+    'max-len': ['error', { code: 100 }],
   },
 };
