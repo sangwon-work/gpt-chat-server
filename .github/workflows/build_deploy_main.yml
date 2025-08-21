@@ -26,7 +26,7 @@ jobs:
         run: |
           git reset --hard HEAD
           git clean -fd
-          git pull origin dev
+          git pull origin develop
 
       - name: Install dependencies & Build # package.json 기반으로 의존성 설치(node_modules) | 애플리케이션 빌드 수행
         working-directory: /home/docker/webroot/gpt-chat-server/www
