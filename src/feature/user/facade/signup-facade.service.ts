@@ -32,9 +32,6 @@ export class SignupFacadeService {
           signupVo.password,
         );
 
-        console.log(
-          `password: ${password}, password length: ${password.length}`,
-        );
         // 회원 생성
         const { userpkey } = await this.createUserService.createUser(
           signupVo.phone,
