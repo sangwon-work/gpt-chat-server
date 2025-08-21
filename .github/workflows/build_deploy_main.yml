@@ -1,0 +1,44 @@
+name: Deploy gpt-chat-server Workflow
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - develop
+
+jobs:
+  deploy1:
+    if: github.event.pull_request.merged == true
+    runs-on: [self-hosted]
+    steps:
+      - name: Checkout repository # 현재 PR이 병합된 저장소(repo)의 코드를 체크아웃(다운로드)합니다.
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 18.20.4 # Node.js 18.20.4 버전을 설치합니다.
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18.20.4
+
+      - name: Install yarn # yarn 패키지 매니저를 글로벌로 설치합니다.
+        run: npm install -g yarn
+
+      - name: Pull latest source from Git # 서비 디렉토리에 최신 소스를 정확히 덮어씌움
+        working-directory: /home/docker/webroot/gpt-chat-server/www   # 실제 프로젝트 경로로 수정
+        run: |
+          git reset --hard HEAD
+          git clean -fd
+          git pull origin dev
+
+      - name: Install dependencies & Build # package.json 기반으로 의존성 설치(node_modules) | 애플리케이션 빌드 수행
+        working-directory: /home/docker/webroot/gpt-chat-server/www
+        run: |
+          yarn install
+          yarn build
+
+      - name: Deploy Docker Compose # build: Docker 이미지 재빌드 | up -d: 컨테이너를 백그라운드에서 실행
+        working-directory: /home/docker
+        run: |
+          sudo -E docker compose build gpt-chat-server
+          sudo -E docker compose up -d gpt-chat-server
+
+      - name: Docker System Prune # 사용하지 않는 Docker 이미지, 컨테이너, 네트워크 등을 삭제
+        run: sudo docker system prune -f
