@@ -8,7 +8,7 @@ on:
 jobs:
   deploy1:
     if: github.event.pull_request.merged == true
-    runs-on: [self-hosted, Linux, X64, organization]
+    runs-on: [self-hosted]
     steps:
       - name: Checkout repository # 현재 PR이 병합된 저장소(repo)의 코드를 체크아웃(다운로드)합니다.
         uses: actions/checkout@v4
