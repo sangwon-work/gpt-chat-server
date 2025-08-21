@@ -41,6 +41,7 @@ export class CreateOneToOneChatRoomFacadeService {
           );
         return { rescode: '0000', body: { roomid, chatroompkey } };
       } else {
+        // 회원을 찾을 수 없음
         return { rescode: '0002', body: null };
       }
     } catch (err) {
