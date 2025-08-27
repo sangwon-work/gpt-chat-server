@@ -8,8 +8,10 @@ export class RedisTestService implements OnModuleInit, OnModuleDestroy {
 
   onModuleInit() {
     this.client = new Redis({
-      host: 'localhost', // Docker나 서버 Redis 주소
+      host: 'redis', // Docker나 서버 Redis 주소
       port: 6379,
+      maxRetriesPerRequest: null, // 재시도 제한 해제
+      enableReadyCheck: false, // ready check 비활성화
     });
   }
 
