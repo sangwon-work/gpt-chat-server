@@ -6,6 +6,7 @@ import { FeatureModule } from '../feature/feature.module';
 import { SharedModule } from '../shared/shared.module';
 import { join } from 'path';
 import { ServeStaticModule } from '@nestjs/serve-static';
+import { RedisModule } from '../feature/redis/redis.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
     CoreModule,
     FeatureModule,
     SharedModule,
+    RedisModule,
   ],
   controllers: [AppController],
   providers: [AppService],
