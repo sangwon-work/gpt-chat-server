@@ -61,11 +61,14 @@ export class UserController {
   @Post('login')
   async login(
     @Req() req: Request,
-    @Res() res: Response,
+    @Res({ passthrough: true }) res: Response,
     @Body() loginVo: LoginDto,
   ) {
     try {
       const { rescode, body } = await this.loginFacadeService.login(loginVo);
+
+      this.loginFacadeService.setCookie(res, body.refreshtoken);
+
       return this.responseService.response(res, 200, rescode, {}, body);
     } catch (err) {
       return this.responseService.response(res, 500, '9999', {}, {});
