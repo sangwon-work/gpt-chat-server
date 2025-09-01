@@ -19,7 +19,7 @@ export class JwtSignService {
   }): Promise<string> {
     return await this.jwtService.signAsync(payload, {
       secret: this.configService.get<Configuration['jwt']>('jwt').access_secret,
-      expiresIn: '15m',
+      expiresIn: '1m',
     });
   }
 
