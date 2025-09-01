@@ -68,7 +68,7 @@ export class AuthController {
     }
   }
 
-  @Get('login')
+  @Post('login')
   async loing(
     @Req() req: Request,
     @Res() res: ExpressResponse,
