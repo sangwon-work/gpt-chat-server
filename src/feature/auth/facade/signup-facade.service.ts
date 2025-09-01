@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { SignupDto } from '../dto/signup.dto';
-import { PhoneDuplicateCheckService } from '../service/phone-duplicate-check.service';
+import { SignupDto } from '../../user/dto/signup.dto';
+import { PhoneDuplicateCheckService } from '../../user/service/phone-duplicate-check.service';
 import { PasswordService } from '../../../shared/password/password.service';
-import { CreateUserService } from '../service/create-user.service';
+import { CreateUserService } from '../../user/service/create-user.service';
 import { JwtSignService } from '../../../shared/jwt/jwt-sign.service';
 
 @Injectable()

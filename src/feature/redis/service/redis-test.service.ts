@@ -20,7 +20,7 @@ export class RedisTestService implements OnModuleInit, OnModuleDestroy {
   }
 
   async set(key: string, value: string) {
-    await this.client.set(key, value, 'EX', 60); // 60초 TTL
+    await this.client.set(key, value, 'EX', 100); // 100초 TTL
   }
 
   async get(key: string) {

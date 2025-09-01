@@ -31,7 +31,8 @@ export class RefreshStrategy extends PassportStrategy(Strategy, 'refresh') {
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { userpkey } = payload;
-      const authorization = req.headers['authorization'];
+      const authorization = req.cookies.refreshtoken;
+      console.log('authorization: ', authorization);
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const [identifier, token] = authorization.split(' ');
 
