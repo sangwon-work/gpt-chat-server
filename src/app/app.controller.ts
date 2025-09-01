@@ -14,6 +14,7 @@ export class AppController {
     return this.appService.getHello();
   }
 
+  // redis 테스트
   @Get('test')
   async test() {
     await this.redisService.set('hello', 'world');

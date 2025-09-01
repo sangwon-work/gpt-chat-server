@@ -3,8 +3,15 @@ import { WebSocketsModule } from './websockets/websockets.module';
 import { UserModule } from './user/user.module';
 import { ChattingModule } from './chatting/chatting.module';
 import { FriendModule } from './friend/friend.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
-  imports: [WebSocketsModule, UserModule, ChattingModule, FriendModule],
+  imports: [
+    WebSocketsModule,
+    UserModule,
+    ChattingModule,
+    FriendModule,
+    AuthModule,
+  ],
 })
 export class FeatureModule {}
