@@ -8,6 +8,10 @@ import { DatabaseService } from '../../../shared/database/database.service';
 import { PoolConnection } from 'mysql2/promise';
 import { AuthModel } from '../auth.model';
 
+function cookieExtractor(req: Request) {
+  return req?.cookies?.refreshToken || null;
+}
+
 @Injectable()
 export class RefreshStrategy extends PassportStrategy(Strategy, 'refresh') {
   constructor(
@@ -16,7 +20,7 @@ export class RefreshStrategy extends PassportStrategy(Strategy, 'refresh') {
     private authModel: AuthModel,
   ) {
     super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      jwtFromRequest: ExtractJwt.fromExtractors([cookieExtractor]), // 핵심
       ignoreExpiration: false,
       secretOrKey:
         configService.get<Configuration['jwt']>('jwt').refresh_secret,
@@ -34,7 +38,7 @@ export class RefreshStrategy extends PassportStrategy(Strategy, 'refresh') {
       const authorization = req.cookies.refreshtoken;
       console.log('authorization: ', authorization);
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const [identifier, token] = authorization.split(' ');
+      // const [identifier, token] = authorization.split(' ');
 
       // 회원 토큰 조회
       // const usertokenset = await this.authModel.getToken(
