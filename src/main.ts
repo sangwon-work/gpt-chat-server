@@ -8,7 +8,7 @@ async function bootstrap() {
 
   // CORS 활성화
   app.enableCors({
-    origin: true,
+    origin: ['http://localhost:3000', 'https://chat.jeonjupos.kr/'],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true, // 쿠키 허용
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
@@ -51,7 +51,7 @@ async function bootstrap() {
     // defaultVersion: '3',
   });
 
-  app.use(cookieParser())
+  app.use(cookieParser());
 
   await app.listen(3001);
 }

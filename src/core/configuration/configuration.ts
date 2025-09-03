@@ -26,6 +26,12 @@ const configuration: Configuration = {
     database: process.env.DB_DATABASE || 'database name',
     connectionLimit: parseInt(process.env.DB_CONNECTIONLIMIT) || 10,
   },
+
+  cookie: {
+    domain: process.env.COOKIE_DOMAIN || '.localhost',
+    secure: process.env.COOKIE_SECURE === 'true' || false,
+    same_site: process.env.COOKIE_SAME_SITE || 'none',
+  },
 };
 
 const configFunction: ConfigFactory<Configuration> = () => configuration;

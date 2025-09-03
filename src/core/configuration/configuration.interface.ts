@@ -14,4 +14,10 @@ export interface Configuration {
     database: string;
     connectionLimit: number;
   };
+
+  cookie: {
+    domain: string;
+    secure: boolean | undefined;
+    same_site: string;
+  };
 }
