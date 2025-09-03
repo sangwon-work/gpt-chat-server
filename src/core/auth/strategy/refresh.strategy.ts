@@ -31,6 +31,7 @@ export class RefreshStrategy extends PassportStrategy(Strategy, 'refresh') {
   async validate(req: Request, payload: any) {
     let connection: PoolConnection | null = null;
     try {
+      console.log('refresh token strategy');
       connection = await this.databaseService.getDBConnection();
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -63,6 +64,7 @@ export class RefreshStrategy extends PassportStrategy(Strategy, 'refresh') {
 
       return payload;
     } catch (err) {
+      console.log('refresh token strategy error: ', err);
       throw err;
     } finally {
       connection?.release();
