@@ -22,6 +22,9 @@ export class CreateMessageService {
         userpkey,
         message,
       );
+
+      // 채팅방 수정 시간 업데이트
+      await this.chattingModel.updateChatRoomUpdateAt(connection, chatroompkey);
     } catch (err) {
       throw err;
     } finally {

@@ -13,7 +13,8 @@ export class ChattingModel {
         select * 
         from chatroom cr
         join chatroomparticipants crp on cr.chatroompkey=crp.chatroompkey
-        where crp.userpkey=?;
+        where crp.userpkey=?
+        order by cr.updatedat desc;
       `,
       [userpkey],
     );
@@ -98,6 +99,17 @@ export class ChattingModel {
         where cm.chatroompkey=?
         order by cm.chatmessagepkey;
       `,
+      [chatroompkey],
+    );
+  }
+
+  async updateChatRoomUpdateAt(
+    connection: PoolConnection,
+    chatroompkey: number,
+  ) {
+    return await this.databaseService.dbQuery(
+      connection,
+      'update chatroom set updatedat=now() where chatroompkey=?;',
       [chatroompkey],
     );
   }
