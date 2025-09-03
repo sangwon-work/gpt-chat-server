@@ -17,7 +17,7 @@ import { RedisModule } from '../feature/redis/redis.module';
     CoreModule,
     FeatureModule,
     SharedModule,
-    RedisModule,
+    // RedisModule,
   ],
   controllers: [AppController],
   providers: [AppService],

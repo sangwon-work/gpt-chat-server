@@ -15,6 +15,8 @@ import { AccessTokenRefreshFacadeService } from './facade/access-token-refresh-f
 import { AuthGuard } from '@nestjs/passport';
 import { SignupFacadeService } from './facade/signup-facade.service';
 import { SignupDto } from '../user/dto/signup.dto';
+import { ConfigService } from '@nestjs/config';
+import { Configuration } from '../../core/configuration/configuration.interface';
 
 @Controller('auth')
 export class AuthController {
@@ -22,6 +24,7 @@ export class AuthController {
     private readonly signupFacadeService: SignupFacadeService,
     private readonly loginFacadeService: LoginFacadeService,
     private readonly accessTokenRefreshFacadeService: AccessTokenRefreshFacadeService,
+    private readonly configService: ConfigService,
   ) {}
 
   /**
@@ -39,11 +42,18 @@ export class AuthController {
     try {
       const { rescode, body } = await this.signupFacadeService.signup(signupVo);
       if (rescode === '0000') {
+        const cookieConfig = this.configService.get<Configuration>('cookie');
         res.cookie('refreshtoken', body.refreshtoken, {
           httpOnly: true,
-          secure: true,
-          sameSite: 'none', // 크로스 서브도메인/도메인이라면 none
-          // domain: '.jeonjupos.kr', // 여러 서브도메인에서 공유하려면
+          secure: cookieConfig.cookie.secure,
+          // eslint-disable-next-line max-len
+          sameSite: (cookieConfig.cookie.same_site ?? 'lax') as
+            | true
+            | false
+            | 'lax'
+            | 'strict'
+            | 'none', // 크로스 서브도메인/도메인이라면 none
+          domain: cookieConfig.cookie.domain, // 여러 서브도메인에서 공유하려면
           path: '/', // 스코프 최소화
           maxAge: 1000 * 60 * 60 * 24 * 21, // 예: 21일
         });
@@ -72,16 +82,24 @@ export class AuthController {
   async loing(
     @Req() req: Request,
     @Res() res: ExpressResponse,
-    @Body() loginVo: LoginDto,
+    @Body() loginDto: LoginDto,
   ) {
     try {
-      const { rescode, body } = await this.loginFacadeService.login(loginVo);
+      const { rescode, body } = await this.loginFacadeService.login(loginDto);
       if (rescode === '0000') {
+        const cookieConfig =
+          this.configService.get<Configuration['cookie']>('cookie');
         res.cookie('refreshtoken', body.refreshtoken, {
           httpOnly: true,
-          secure: true,
-          sameSite: 'none', // 크로스 서브도메인/도메인이라면 none
-          // domain: '*.jeonjupos.kr', // 여러 서브도메인에서 공유하려면
+          secure: cookieConfig.secure,
+          // eslint-disable-next-line max-len
+          sameSite: (cookieConfig.same_site ?? 'lax') as
+            | true
+            | false
+            | 'lax'
+            | 'strict'
+            | 'none', // 크로스 서브도메인/도메인이라면 none
+          domain: cookieConfig.domain, // 여러 서브도메인에서 공유하려면
           path: '/', // 스코프 최소화
           maxAge: 1000 * 60 * 60 * 24 * 21, // 예: 21일
         });
@@ -135,6 +153,23 @@ export class AuthController {
           userpkey,
           nickname,
         );
+
+      const cookieConfig =
+        this.configService.get<Configuration['cookie']>('cookie');
+      res.cookie('refreshtoken', refreshtoken, {
+        httpOnly: true,
+        secure: cookieConfig.secure,
+        // eslint-disable-next-line max-len
+        sameSite: (cookieConfig.same_site ?? 'lax') as
+          | true
+          | false
+          | 'lax'
+          | 'strict'
+          | 'none', // 크로스 서브도메인/도메인이라면 none
+        domain: cookieConfig.domain, // 여러 서브도메인에서 공유하려면
+        path: '/', // 스코프 최소화
+        maxAge: 1000 * 60 * 60 * 24 * 21, // 예: 21일
+      });
 
       return res.status(200).json({
         resCode: '0000',

@@ -1,12 +1,12 @@
 import { Controller, Get } from '@nestjs/common';
 import { AppService } from './app.service';
-import { RedisTestService } from '../feature/redis/service/redis-test.service';
+// import { RedisTestService } from '../feature/redis/service/redis-test.service';
 
 @Controller()
 export class AppController {
   constructor(
     private readonly appService: AppService,
-    private readonly redisService: RedisTestService,
+    // private readonly redisService: RedisTestService,
   ) {}
 
   @Get()
@@ -15,10 +15,10 @@ export class AppController {
   }
 
   // redis 테스트
-  @Get('test')
-  async test() {
-    await this.redisService.set('hello', 'world');
-    const value = await this.redisService.get('hello');
-    return { hello: value };
-  }
+  // @Get('test')
+  // async test() {
+  //   await this.redisService.set('hello', 'world');
+  //   const value = await this.redisService.get('hello');
+  //   return { hello: value };
+  // }
 }

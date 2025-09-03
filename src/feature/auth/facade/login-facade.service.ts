@@ -12,13 +12,13 @@ export class LoginFacadeService {
     private readonly jwtSignService: JwtSignService,
   ) {}
 
-  async login(loginVo: LoginDto): Promise<{
+  async login(loginDto: LoginDto): Promise<{
     rescode: string;
     body: { accesstoken: string; refreshtoken: string };
   }> {
     try {
       // 회원 조회
-      const { user } = await this.getUserByPhoneService.getUser(loginVo.phone);
+      const { user } = await this.getUserByPhoneService.getUser(loginDto.phone);
       if (user === null) {
         // 회원을 찾을 없음
         return { rescode: '0002', body: { accesstoken: '', refreshtoken: '' } };
@@ -26,7 +26,7 @@ export class LoginFacadeService {
         // 비밀번호 일치여부 확인
         const isvalid: boolean = this.passwordService.valid(
           user.password,
-          loginVo.password,
+          loginDto.password,
         );
 
         if (isvalid === true) {

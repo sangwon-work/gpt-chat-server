@@ -9,7 +9,7 @@ import { PoolConnection } from 'mysql2/promise';
 import { AuthModel } from '../auth.model';
 
 function cookieExtractor(req: Request) {
-  return req?.cookies?.refreshToken || null;
+  return req?.cookies?.refreshtoken || null;
 }
 
 @Injectable()
@@ -17,7 +17,6 @@ export class RefreshStrategy extends PassportStrategy(Strategy, 'refresh') {
   constructor(
     private readonly configService: ConfigService,
     private databaseService: DatabaseService,
-    private authModel: AuthModel,
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([cookieExtractor]), // 핵심
@@ -29,6 +28,7 @@ export class RefreshStrategy extends PassportStrategy(Strategy, 'refresh') {
   }
 
   async validate(req: Request, payload: any) {
+    console.log('121312312312');
     let connection: PoolConnection | null = null;
     try {
       console.log('refresh token strategy');
@@ -37,7 +37,6 @@ export class RefreshStrategy extends PassportStrategy(Strategy, 'refresh') {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { userpkey } = payload;
       const authorization = req.cookies.refreshtoken;
-      console.log('authorization: ', authorization);
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       // const [identifier, token] = authorization.split(' ');
 
