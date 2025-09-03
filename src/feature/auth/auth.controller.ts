@@ -81,7 +81,7 @@ export class AuthController {
           httpOnly: true,
           secure: true,
           sameSite: 'none', // 크로스 서브도메인/도메인이라면 none
-          domain: '*.jeonjupos.kr', // 여러 서브도메인에서 공유하려면
+          // domain: '*.jeonjupos.kr', // 여러 서브도메인에서 공유하려면
           path: '/', // 스코프 최소화
           maxAge: 1000 * 60 * 60 * 24 * 21, // 예: 21일
         });
