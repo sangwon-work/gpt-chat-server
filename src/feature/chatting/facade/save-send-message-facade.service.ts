@@ -14,7 +14,7 @@ export class SaveSendMessageFacadeService {
       // 채팅방 조회
       const { chatroom } =
         await this.getChattingRoomService.getChattingRoom(roomid);
-      console.log(chatroom);
+
       // 메세지 저장
       await this.createMessageService.createMessage(
         chatroom.chatroompkey,
