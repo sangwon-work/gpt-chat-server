@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '../../../shared/database/database.service';
 import { UserModel } from '../user.model';
 import { PoolConnection } from 'mysql2/promise';
+import { UserVo } from '../vo/user.vo';
 
 @Injectable()
 export class GetUserInfoService {
@@ -10,12 +11,15 @@ export class GetUserInfoService {
     private readonly userModel: UserModel,
   ) {}
 
-  async getUserInfo(userpkey: number) {
+  async getUserInfo(userpkey: number): Promise<{ user: UserVo }> {
     let connection: PoolConnection | null = null;
     try {
       connection = await this.databaseService.getDBConnection();
 
-      const userset = await this.userModel.getUserInfo(connection, userpkey);
+      const userset: UserVo[] = await this.userModel.getUserInfo(
+        connection,
+        userpkey,
+      );
 
       return { user: userset[0] };
     } catch (err) {

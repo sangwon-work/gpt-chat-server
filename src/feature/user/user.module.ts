@@ -11,6 +11,7 @@ import { GetUserInfoFacadeService } from './facade/get-user-info-facade.service'
 import { GetUserSearchListService } from './service/get-user-search-list.service';
 import { UserSearchFacadeService } from './facade/user-search-facade.service';
 import { GetUserByPkeyService } from './service/get-user-by-pkey.service';
+import { GetUserProfileFacadeService } from './facade/get-user-profile-facade.service';
 
 @Module({
   controllers: [UserController],
@@ -26,6 +27,7 @@ import { GetUserByPkeyService } from './service/get-user-by-pkey.service';
     GetUserSearchListService,
     UserSearchFacadeService,
     GetUserByPkeyService,
+    GetUserProfileFacadeService,
   ],
   exports: [
     GetUserByPkeyService,

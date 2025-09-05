@@ -55,7 +55,7 @@ export class UserModel {
   async getUserInfo(connection: PoolConnection, userpkey: number) {
     return await this.databaseService.dbQuery(
       connection,
-      "select nickname, '' as profileimageurl from user where userpkey=?",
+      "select userpkey, nickname, '' as profileimageurl from user where userpkey=?",
       [userpkey],
     );
   }
