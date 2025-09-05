@@ -42,18 +42,19 @@ export class AuthController {
     try {
       const { rescode, body } = await this.signupFacadeService.signup(signupVo);
       if (rescode === '0000') {
-        const cookieConfig = this.configService.get<Configuration>('cookie');
+        const cookieConfig =
+          this.configService.get<Configuration['cookie']>('cookie');
         res.cookie('refreshtoken', body.refreshtoken, {
           httpOnly: true,
-          secure: cookieConfig.cookie.secure,
+          secure: cookieConfig.secure,
           // eslint-disable-next-line max-len
-          sameSite: (cookieConfig.cookie.same_site ?? 'lax') as
+          sameSite: (cookieConfig.same_site ?? 'lax') as
             | true
             | false
             | 'lax'
             | 'strict'
             | 'none', // 크로스 서브도메인/도메인이라면 none
-          domain: cookieConfig.cookie.domain, // 여러 서브도메인에서 공유하려면
+          domain: cookieConfig.domain, // 여러 서브도메인에서 공유하려면
           path: '/', // 스코프 최소화
           maxAge: 1000 * 60 * 60 * 24 * 21, // 예: 21일
         });
@@ -72,6 +73,7 @@ export class AuthController {
         });
       }
     } catch (err) {
+      console.log(err);
       return res
         .status(500)
         .json({ resCode: '9999', message: '서버오류', body: {} });
