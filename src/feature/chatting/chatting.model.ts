@@ -91,6 +91,7 @@ export class ChattingModel {
       connection,
       `
         select 
+            u.userpkey,
             u.nickname sender,
             cm.message,
             cm.sendat

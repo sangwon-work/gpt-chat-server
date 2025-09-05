@@ -10,7 +10,7 @@ export class GetChatRoomMessageListService {
     private readonly chattingModel: ChattingModel,
   ) {}
 
-  async getMessageList(chatroompkey: number) {
+  async getMessageList(chatroompkey: number, userpkey: number) {
     let connection: PoolConnection | null = null;
 
     try {
@@ -22,7 +22,12 @@ export class GetChatRoomMessageListService {
         chatroompkey,
       );
 
-      return { messagelist: chatmessageset };
+      const messagelist = chatmessageset.map((message) => {
+        message.ismine = message.userpkey === userpkey;
+        return message;
+      });
+
+      return { messagelist: messagelist };
     } catch (err) {
       throw err;
     } finally {

@@ -9,7 +9,10 @@ export class GetChattingRoomMessageFacadeService {
     private readonly getChatRoomMessageListService: GetChatRoomMessageListService,
   ) {}
 
-  async getMessages(roomId: string): Promise<{
+  async getMessages(
+    roomId: string,
+    userpkey: number,
+  ): Promise<{
     roomname: string;
     messages: { sender: string; message: string; sendat: string }[];
   }> {
@@ -22,6 +25,7 @@ export class GetChattingRoomMessageFacadeService {
       const { messagelist } =
         await this.getChatRoomMessageListService.getMessageList(
           chatroom.chatroompkey,
+          userpkey,
         );
       return { roomname: chatroom.roomname, messages: messagelist };
     } catch (err) {

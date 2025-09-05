@@ -69,6 +69,7 @@ export class WebSocketsGateway
 
     // 특정 채팅방에 메세지 전송
     this.server.to(payload.roomId).emit('message', {
+      userpkey: user.userpkey,
       sender: user.nickname,
       message: payload.message,
       sendat: new Date().toISOString(),
@@ -79,10 +80,13 @@ export class WebSocketsGateway
   @SubscribeMessage('join')
   async handleJoin(client: Socket, roomId: string) {
     client.join(roomId);
+    const user = client.data.user; // 👈 미들웨어에서 붙인 유저 정보
     // 채팅 대화 목록 조회
     const { roomname, messages } =
-      await this.getChattingRoomMessageFacadeService.getMessages(roomId);
-    console.log(roomname);
+      await this.getChattingRoomMessageFacadeService.getMessages(
+        roomId,
+        user.userpkey,
+      );
     client.emit('joined', {
       roomId: roomId,
       roomname: roomname,
