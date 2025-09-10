@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { FriendController } from './friend.controller';
 import { FriendModel } from './friend.model';
 import { GetFriendListFacadeService } from './facade/get-friend-list-facade.service';
@@ -13,7 +13,7 @@ import { GetFriendDiscoverListService } from './service/get-friend-discover-list
 import { FriendAcceptService } from './service/friend-accept.service';
 
 @Module({
-  imports: [UserModule],
+  imports: [forwardRef(() => UserModule)],
   controllers: [FriendController],
   providers: [
     FriendModel,
@@ -26,5 +26,6 @@ import { FriendAcceptService } from './service/friend-accept.service';
     GetFriendDiscoverListService,
     FriendAcceptService,
   ],
+  exports: [GetFriendListService],
 })
 export class FriendModule {}

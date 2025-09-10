@@ -12,8 +12,10 @@ import { GetUserSearchListService } from './service/get-user-search-list.service
 import { UserSearchFacadeService } from './facade/user-search-facade.service';
 import { GetUserByPkeyService } from './service/get-user-by-pkey.service';
 import { GetUserProfileFacadeService } from './facade/get-user-profile-facade.service';
+import { FriendModule } from '../friend/friend.module';
 
 @Module({
+  imports: [FriendModule],
   controllers: [UserController],
   providers: [
     UserModel,

@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '../../../shared/database/database.service';
 import { PoolConnection } from 'mysql2/promise';
 import { UserModel } from '../user.model';
+import { UserSearchVo } from '../vo/user-search.vo';
 
 @Injectable()
 export class GetUserSearchListService {
@@ -10,13 +11,21 @@ export class GetUserSearchListService {
     private readonly userModel: UserModel,
   ) {}
 
-  async getList(search: string, userpkey: number) {
+  /**
+   * 친구 추가 검색시 회원 조회
+   * @param search
+   * @param userpkey
+   */
+  async getList(
+    search: string,
+    userpkey: number,
+  ): Promise<{ userlist: UserSearchVo[] }> {
     let connection: PoolConnection | null = null;
 
     try {
       connection = await this.databaseService.getDBConnection();
 
-      const userset = await this.userModel.getUserSearch(
+      const userset: UserSearchVo[] = await this.userModel.getUserSearch(
         connection,
         search,
         userpkey,
